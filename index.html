@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DODO Perfumes</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+    .main-logo {
+      font-size: 64px;
+      font-weight: 900;
+      text-align: center;
+      margin: 30px 0 10px;
+      color: #2c3e50;
+      letter-spacing: 3px;
+    }
+    .sub-title {
+      text-align: center;
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    input:invalid {
+      border: 2px solid red;
+    }
+    input:invalid:required:focus::placeholder {
+      color: red;
+    }
+    .cart-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #000;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    .cart {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 320px;
+      height: 100vh;
+      background: #fff;
+      padding: 20px;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+      z-index: 999;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .cart.open {
+      right: 0;
+    }
+    .cart h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+    .cart ul {
+      list-style: none;
+      padding: 0;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .cart ul li {
+      font-size: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-left: 10px;
+    }
+    .remove-btn {
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    .cart .total {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <button class="cart-toggle" onclick="toggleCart()">🛒 عرض السلة</button>
+  <div class="cart" id="cartPanel">
+    <h3>السلة</h3>
+    <ul id="cartItems"></ul>
+    <div class="total" id="totalPrice">الإجمالي: 0 جنيه</div>
+    <button onclick="checkout()">إتمام الطلب</button>
+  </div>
+
+  <header class="header">
+    <div class="main-logo">DODO</div>
+    <div class="sub-title">فخامة تُعبّر عنك</div>
+  </header>
+
+  <section class="products">
+    <div class="card animate" data-name="Sauvage" data-price="250" data-img="https://i.pinimg.com/originals/0b/43/cd/0b43cd50718dd1577ff0419e986c6956.jpg">
+      <img src="https://i.pinimg.com/originals/0b/43/cd/0b43cd50718dd1577ff0419e986c6956.jpg" alt="Sauvage" />
+      <h2>Sauvage</h2>
+      <p>عطر رجالي أنيق يعكس القوة والجاذبية</p>
+      <div class="price-section">
+        <span class="price">250 جنيه</span>
+      </div>
+      <div class="stars">★★★★★</div>
+      <button onclick="addToCart(this)">أضف إلى السلة</button>
+    </div>
+
+    <div class="card animate" data-name="خمرة" data-price="350" data-img="https://down-my.img.susercontent.com/file/my-11134207-23020-6s4a825k7inv8a">
+      <img src="https://down-my.img.susercontent.com/file/my-11134207-23020-6s4a825k7inv8a" alt="خمرة" />
+      <h2>خمرة</h2>
+      <p>عطر شرقي فاخر برائحة تدوم طويلاً</p>
+      <div class="price-section">
+        <span class="price">350 جنيه</span>
+      </div>
+      <div class="stars">★★★★★</div>
+      <button onclick="addToCart(this)">أضف إلى السلة</button>
+    </div>
+  </section>
+
+  <div class="form-container" id="orderForm">
+    <div class="form-box animate">
+      <h2>طلب المنتجات</h2>
+      <form action="https://formspree.io/f/xpwdgovl" method="POST">
+        <textarea name="المنتجات" id="cartSummary" readonly rows="4"></textarea>
+        <input type="text" name="الاسم" placeholder="ادخل الاسم صحيح" required pattern="^[\u0600-\u06FF\s]{2,}$" title="ادخل الاسم صحيح" />
+        <input type="tel" name="رقم الهاتف" placeholder="اكتب الرقم صحيح" required pattern="^(010|011|012|015)\d{8}$" title="اكتب الرقم صحيح" />
+        <input type="text" name="العنوان" placeholder="اكتب العنوان صحيح" required title="اكتب العنوان صحيح" />
+        <button type="submit">تأكيد الطلب</button>
+        <button type="button" onclick="closeForm()">إلغاء</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>© جميع الحقوق محفوظة لـ DODO Perfumes 2025</p>
+  </footer>
+
+  <script>
+    let cart = [];
+
+    function toggleCart(open = null) {
+      const cartPanel = document.getElementById("cartPanel");
+      if (open === true) {
+        cartPanel.classList.add("open");
+      } else if (open === false) {
+        cartPanel.classList.remove("open");
+      } else {
+        cartPanel.classList.toggle("open");
+      }
+    }
+
+    function addToCart(button) {
+      const card = button.closest(".card");
+      const name = card.getAttribute("data-name");
+      const price = parseFloat(card.getAttribute("data-price"));
+      const img = card.getAttribute("data-img");
+      cart.push({ name, price, img });
+      updateCart();
+      toggleCart(true);
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    function updateCart() {
+      const list = document.getElementById("cartItems");
+      const totalDiv = document.getElementById("totalPrice");
+      list.innerHTML = "";
+
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price;
+        const li = document.createElement("li");
+        li.innerHTML = `<img src="${item.img}" alt="${item.name}" /> ${item.name} - ${item.price} جنيه <button class='remove-btn' onclick='removeItem(${index})'>إزالة</button>`;
+        list.appendChild(li);
+      });
+
+      totalDiv.textContent = `الإجمالي: ${total.toFixed(0)} جنيه`;
+    }
+
+    function checkout() {
+      if (cart.length === 0) return alert("لم تقم بإضافة أي منتج!");
+      const summary = cart.map(p => `${p.name} - ${p.price} جنيه`).join("\n");
+      document.getElementById("cartSummary").value = summary;
+      document.getElementById("orderForm").style.display = "flex";
+    }
+
+    function closeForm() {
+      document.getElementById("orderForm").style.display = "none";
+    }
+  </script>
+</body>
+</html>
